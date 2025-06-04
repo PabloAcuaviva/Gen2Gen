@@ -1,0 +1,739 @@
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>From Generation to Generalization: Emergent Few-Shot Learning in Video Diffusion Models</title>
+    <meta name="description" content="Gen2Gen - Website">
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    <meta name="robots" content="all">
+    <meta content="en_EN" property="og:locale">
+    <meta content="website" property="og:type">
+    <meta content="https://shikun.io/projects/clarity" property="og:url">
+    <meta content="Gen2Gen" property="og:title">
+    <meta content="Gen2Gen - 2025" property="og:description">
+    <link rel="stylesheet" type="text/css" media="all" href="assets/stylesheets/main_free.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="assets/stylesheets/custom_additional.css" />
+    <link rel="stylesheet" type="text/css" media="all" href="clarity/clarity.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/styles/foundation.min.css">
+    <link href="assets/fontawesome-free-6.6.0-web/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css"/>
+    <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            "HTML-CSS": {
+              scale: 95,
+              fonts: ["Gyre-Pagella"],
+              imageFont: null,
+              undefinedFamily: "'Arial Unicode MS', cmbright"
+            },
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                processEscapes: true
+              }
+          });
+    </script>
+    <script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+</head>
+
+<body>
+    <!-- Title Page -->
+    <!-- Dark Theme Example: Change the background colour dark and change the following div "blog-title" into "blog-title white". -->
+    <div class="container blog" id="first-content" style="background-color: #E0E4E6;">
+        <!-- If you don't have a project cover: Change "blog-title" into "blog-title no-cover"  -->
+        <div class="blog-title-no-cover">
+            <div class="blog-intro">
+                <div>
+                    <h1 class="title centered">From Generation to Generalization: Emergent Few-Shot Learning in Video Diffusion Models</h1>
+                    
+                    <style>
+                        .author-block {
+                            text-align: center;
+                            font-size: 1.05rem;
+                            line-height: 1.6;
+                            margin-bottom: 1.5em;
+                            margin-top: 1.5em;
+                        }
+                        .author-names {
+                            font-weight: 500;
+                        }
+                        .affiliations {
+                            font-size: 0.9rem;
+                            color: #555;
+                            margin-top: 0.3em;
+                        }
+                        .author-block sup {
+                            font-size: 0.65em;
+                            vertical-align: super;
+                            line-height: 0;
+                        }
+                        .affiliations a {
+                            font-size: inherit;
+                            text-decoration: underline;
+                            color: inherit;
+                        }
+                        </style>
+
+                        <div class="author-block">
+                        <div class="author-names">
+                            Pablo Acuaviva<sup>1</sup>, Aram Davtyan<sup>1</sup>, Mariam Hassan<sup>2</sup>,<br>
+                            Sebastian Stapf<sup>1</sup>, Ahmad Rahimi<sup>2</sup>, Alexandre Alahi<sup>2</sup>, and Paolo Favaro<sup>1</sup>
+                        </div>
+                        <div class="affiliations">
+                            <sup>1</sup> Computer Vision Group, University of Bern — 
+                            <a href="https://www.cvg.unibe.ch/people/" target="_blank">cvg.unibe.ch</a><br>
+                            <sup>2</sup> VITA Lab, EPFL — 
+                            <a href="https://www.epfl.ch/labs/vita/people/" target="_blank">epfl.ch/labs/vita</a>
+                        </div>
+                        </div>
+
+                    <p class="abstract spacing-up-down">
+                        Video Diffusion Models (VDMs) have emerged as powerful generative tools, capable of synthesizing high-quality spatiotemporal content. Yet, their potential goes far beyond mere video generation. We argue that the training dynamics of VDMs, driven by the need to model coherent sequences, naturally pushes them to internalize structured representations and an implicit understanding of the visual world. To probe the extent of this internal knowledge, we introduce a few-shot fine-tuning framework that repurposes VDMs for new tasks using only a handful of examples. Our method transforms each task into a visual transition, enabling the training of LoRA weights on short input–output sequences without altering the generative interface of a frozen VDM. Despite minimal supervision, the model exhibits strong generalization across diverse tasks, from low-level vision (for example, segmentation and pose estimation) to high-level reasoning (for example, on ARC-AGI). These results reframe VDMs as more than generative engines. They are adaptable visual learners with the potential to serve as the backbone for future foundation models in vision.
+                    </p>
+                    <!-- Using FontAwesome Pro -->
+                    <!-- <div class="info">
+                        <div>
+                            <a href="https://arxiv.org" class="button icon" style="background-color: rgba(255, 255, 255, 0.3)"> Paper <i class="far fa-book-open"></i></a> &nbsp;&nbsp; 
+                            <a href="https://github.com" class="button icon" style="background-color: rgba(255, 255, 255, 0.3)">Code <i class="far fa-code"></i></a>  &nbsp;&nbsp; 
+                            <a href="https://www.microsoft.com/en-gb/microsoft-365/powerpoint" class="button icon" style="background-color: rgba(255, 255, 255, 0.3);">Slides <i class="far fa-presentation"></i></a>  &nbsp;&nbsp; 
+                            <a href="https://huggingface.co/spaces" class="button icon" style="background-color: rgba(255, 255, 255, 0.3)">Demo <i class="fa-light fa-face-smiling-hands"></i></a>
+                        </div>
+                    </div> -->
+
+                    <!-- Using FontAwesome Free -->
+                    <div class="info centered">
+                        <div>
+                            <a href="https://arxiv.org" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)"> Paper <i class="fa-solid fa-book-open"></i></a> &nbsp;&nbsp; 
+                            <a href="https://github.com/PabloAcuaviva/Gen2Gen" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)">Code <i class="fa-solid fa-code"></i></a>  &nbsp;&nbsp; 
+                            <!-- <a href="https://www.microsoft.com/en-gb/microsoft-365/powerpoint" class="button icon" style="background-color: rgba(255, 255, 255, 0.2);">Slides <i class="fa-regular fa-file-powerpoint"></i></a> &nbsp;&nbsp; 
+                            <a href="https://huggingface.co/spaces/" class="button icon" style="background-color: rgba(255, 255, 255, 0.2)">Demo <i class="fa-solid fa-laptop-code"></i></a>  -->
+                        </div>
+                    </div>
+                </div>
+            
+            </div>
+
+        
+        </div>
+    </div>
+
+    <!-- Allows clickable images to be expanded -->
+    <div id="imageModal" class="modal">
+        <span class="close" id="closeModal">&times;</span>
+        <img class="modal-content" id="modalImg">
+        <div id="modalCaption" class="modal-caption"></div>
+    </div>
+    <!-- ====================================== -->
+
+    <div class="container blog main first" id="blog-main">
+        <h1 class="title-centered">
+            Introduction 
+        </h1>
+        <p class='text'> 
+            In recent years, diffusion models have redefined the frontier of generative modeling, demonstrating exceptional performance in high dimensional data domains such as images, audio, and video. Among these, Video Diffusion Models (VDMs) have emerged as particularly powerful, capable of producing temporally coherent, high-fidelity video sequences. Yet, their potential remains largely constrained to the domain of generation. This paper aims to explore a broader hypothesis: that the training objectives of VDMs, rooted in modeling complex spatiotemporal dynamics, naturally endow them with internal representations that are useful far beyond synthesis. 
+        </p> 
+        <p class='text'> 
+            We investigate the capacity of pre-trained VDMs to act as general-purpose visual learners when exposed to minimal supervision. Our key insight is that fine-tuning these models on short visual transitions can repurpose them for downstream tasks without disrupting their generative interface. To this end, we introduce a lightweight few-shot fine-tuning framework that applies LoRA adapters to a frozen VDM. This setup allows us to cast a wide variety of tasks as visual transformations, enabling the model to generalize from very limited task-specific data. 
+        </p>
+    </div>
+
+    <div class="container blog main gray-linear">
+        <img src="assets/figures/fig_method.png" alt="Framework Diagram">
+        <p class="caption">
+            Proposed framework. Given a task encoded as input-target image pairs (dashed gray box), a transition video is constructed to transform the input into the target. We fine-tune LoRA adapters with the core model frozen. At inference, the model outputs a transition video from a new input, with the final frame used as the prediction.
+        </p>
+    </div>
+
+
+    <div class="container blog main">
+        <h1 class="title-centered">Results</h1>
+        <p class="text">
+            We present qualitative results as videos (full generated transitions) and images (final generated frame).
+        </p>
+    </div>
+
+    <!-- COLORIZATION -->
+    <div class="container blog main gray extra-large">
+        <h2 class="centered"> Colorization </h2>
+        <div class="columns-4">
+            <!-- Colorization I -->
+            <img-comparison-slider class="slider-container white">
+                <figure slot="first" class="before">
+                    <img src="assets/images/colorization/x-0.png">
+                    <figcaption class="white">Gray</figcaption>
+                </figure>
+                <figure slot="second" class="after">
+                    <img src="assets/images/colorization/y-0.png">
+                    <figcaption class="white">Colorization</figcaption>
+                </figure>
+            </img-comparison-slider>
+            <!-- Colorization II -->
+             <img-comparison-slider class="slider-container white">
+                <figure slot="first" class="before">
+                    <img src="assets/images/colorization/x-1.png">
+                    <figcaption class="white">Gray</figcaption>
+                </figure>
+                <figure slot="second" class="after">
+                    <img src="assets/images/colorization/y-1.png">
+                    <figcaption class="white">Colorization</figcaption>
+                </figure>
+            </img-comparison-slider>
+             <!-- Colorization III -->
+             <img-comparison-slider class="slider-container white">
+                <figure slot="first" class="before">
+                    <img src="assets/images/colorization/x-2.png">
+                    <figcaption class="white">Gray</figcaption>
+                </figure>
+                <figure slot="second" class="after">
+                    <img src="assets/images/colorization/y-2.png">
+                    <figcaption class="white">Colorization</figcaption>
+                </figure>
+            </img-comparison-slider>
+            <!-- Colorization IV -->
+             <img-comparison-slider class="slider-container white">
+                <figure slot="first" class="before">
+                    <img src="assets/images/colorization/x-3.png">
+                    <figcaption class="white">Gray</figcaption>
+                </figure>
+                <figure slot="second" class="after">
+                    <img src="assets/images/colorization/y-3.png">
+                    <figcaption class="white">Colorization</figcaption>
+                </figure>
+            </img-comparison-slider>
+            
+        </div>
+        <p class="caption">
+            Examples for Colorization after training with n=10 samples.
+        </p>
+    </div>
+
+    <!-- STYLE TRANSFER-->
+    <div class="container blog extra-large gray" id="style-transfer">
+        <h2 class="title-centered"> Style Transfer </h2>
+        <div class="slide-menu">
+            <ul class="dots" id="style-transfer-slide-menu"></ul>
+        </div>
+    </div>
+
+    <script>
+        const indices_style_transfer = [0, 3, 6, 9];
+        const styles_style_transfer = ['vangoh', 'pixelart', 'cubism', 'ukiyoe'];
+        const styleNameMap = {
+            vangoh: 'Starry Night',
+            pixelart: 'Pixel Art',
+            cubism: 'Cubism',
+            ukiyoe: 'Ukiyo-e'
+        };
+        const menu_style_transfer = document.getElementById('style-transfer-slide-menu');
+        const slides_style_transfer = document.getElementById('style-transfer');
+
+        indices_style_transfer.forEach((i, idx) => {
+        const isActive = idx === 0;
+
+        const dot = document.createElement('li');
+        dot.className = 'dot' + (isActive ? ' active' : '') + ' style-transfer';
+        menu_style_transfer.appendChild(dot);
+
+        const slide = document.createElement('div');
+        slide.className = 'style-transfer-slide-content';
+        slide.style.display = isActive ? 'block' : 'none';
+
+        const displayNames = styles_style_transfer.map(style => styleNameMap[style] || style);
+
+        const sliders = styles_style_transfer.map(style => `
+            <div>
+            <img-comparison-slider class="slider-container white">
+                <figure slot="first" class="before">
+                <img src="assets/images/styles/input/${i}.png">
+                <figcaption class="white">Original</figcaption>
+                </figure>
+                <figure slot="second" class="after">
+                <img src="assets/images/styles/${style}/${i}.png">
+                <figcaption class="white">${styleNameMap[style] || style.charAt(0).toUpperCase() + style.slice(1).replace('-', ' ')}</figcaption>
+                </figure>
+            </img-comparison-slider>
+            </div>
+        `).join('');
+
+        slide.innerHTML = `
+            <div class="columns-4">
+            ${sliders}
+            </div>
+            <p class="caption">
+            Examples for Style Transfer after training with a single sample (n=1).
+            </p>
+        `;
+
+        slides_style_transfer.appendChild(slide);
+        });
+    </script>
+
+    <!-- ARC AGI -->
+    <div class="container blog main">
+        <!-- <h1 class="title-centered">Visual Reasoning</h1> -->
+        <h2 class="title-centered">ARC-AGI</h2>  
+        <p class="text">
+            Navigate through problems with the arrows on the side. Each problem displays training examples (top row) and validation with model predictions (bottom row). To zoom in on an image, click on it.
+        </p>  
+    </div>
+
+    <div class="container blog extra-large">
+        <div class="custom-carousel" id="arc-agi-results">
+        <div class="custom-carousel-inner" id="inner-carousel-arc-agi">
+            <!-- ARC Examples as Items added in Code -->
+        </div>
+        <button class="custom-carousel-button prev">
+            <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <button class="custom-carousel-button next">
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </button>
+        </div>
+    </div>
+    
+    <script>
+        const arc_info = JSON.parse(`
+        {"088": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "005": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "194": {"train": ["train_001.png", "train_002.png", "train_004.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "168": {"train": ["train_001.png", "train_002.png", "train_004.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "156": {"train": ["train_001.png", "train_000.png"], "val": ["test_000.png"]}, "115": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "076": {"train": ["train_001.png", "train_002.png", "train_004.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "351": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "054": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "300": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "016": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "384": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "362": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "151": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "157": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "322": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_000.png"]}, "363": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "144": {"train": ["train_001.png", "train_002.png", "train_004.png", "train_003.png", "train_000.png"], "val": ["test_001.png", "test_000.png"]}, "240": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}, "216": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_000.png"]}}
+        `);
+        const arc_carousel_inner = document.getElementById("inner-carousel-arc-agi")
+
+        for (const pid in arc_info) {
+            const arc_train = arc_info[pid]["train"]
+            const arc_val = arc_info[pid]["val"]
+            
+            // Prepare training columns
+            let images_html_train = '<div></div>'
+            arc_train.forEach(filename => {
+            images_html_train += `
+                <div>
+                    <h3 class="centered color-gray">Input</h3>
+                    <div class="clickable-img-container">
+                        <img src="assets/images/arc-like/arc-agi/${pid}/input/${filename}" class="clickable-img arc-image" />
+                    </div>
+                </div>
+                <div>
+                    <h3 class="centered color-gray">Target</h3>
+                    <div class="clickable-img-container">
+                    <img src="assets/images/arc-like/arc-agi/${pid}/output/${filename}" class="clickable-img arc-image" />
+                    </div>
+                </div>
+            `;
+            });
+
+            // Prepare validation columns
+            let images_html_val = '<div></div>'
+            arc_val.forEach(filename => {
+            images_html_val += `
+                <div>
+                    <h3 class="centered color-gray">Input</h3>
+                    <div class="clickable-img-container">
+                        <img src="assets/images/arc-like/arc-agi/${pid}/input/${filename}" class="clickable-img arc-image" />
+                    </div>
+                </div>
+                <div>
+                    <h3 class="centered color-pink">Prediction</h3>
+                    <div class="clickable-img-container">
+                        <img src="assets/images/arc-like/arc-agi/${pid}/pred/${filename}" class="clickable-img arc-image" />
+                    </div>
+                </div>
+            `;
+            });
+
+            // Format: 
+            // Training Data
+            // Validation Data Below
+            item_html = `<div class="custom-carousel-item">
+                    <!-- <h3 class="color-pink"> Training </h3> -->
+                    <div class="columns-${2+2*arc_train.length}">
+                        ${images_html_train}
+                    </div>
+                    <!-- <h2 class="color-pink"> Validation </h2> -->
+                    <div class="columns-${2+2*arc_val.length}">
+                        ${images_html_val}
+                    </div>
+                </div>`
+            
+            arc_carousel_inner.innerHTML += item_html
+        };
+
+    </script>
+
+    <!-- CONCEPT ARC-->
+    <div class="container blog main">
+        <h2 class="title-centered">ConceptArc</h2>
+        <p class="text">
+            Navigate through different concepts using the dot menu below. Each concept displays training examples (top row) and validation with model predictions (bottom row). Use the arrows to explore different problems. To zoom in on an image, click on it.
+        </p>
+        
+        <div class="concept-grid">
+            <div class="concept-row">
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/clean_up.png" alt="Clean Up">
+                    </div>
+                    <div class="concept-name">Clean Up</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/extend_to_boundary.png" alt="Extend to Boundary">
+                    </div>
+                    <div class="concept-name">Extend to Boundary</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/center.png" alt="Center">
+                    </div>
+                    <div class="concept-name">Center</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/order.png" alt="Order">
+                    </div>
+                    <div class="concept-name">Order</div>
+                </div>
+            </div>
+            
+            <div class="concept-row">
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/top_bottom2_d.png" alt="Top Bottom 2D">
+                    </div>
+                    <div class="concept-name">Top Bottom 2D</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/extract_objects.png" alt="Extract Objects">
+                    </div>
+                    <div class="concept-name">Extract Objects</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/top_bottom3_d.png" alt="Top Bottom 3D">
+                    </div>
+                    <div class="concept-name">Top Bottom 3D</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/above_below.png" alt="Above Below">
+                    </div>
+                    <div class="concept-name">Above Below</div>
+                </div>
+            </div>
+            
+            <div class="concept-row">
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/horizontal_vertical.png" alt="Horizontal Vertical">
+                    </div>
+                    <div class="concept-name">Horizontal Vertical</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/count.png" alt="Count">
+                    </div>
+                    <div class="concept-name">Count</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/copy.png" alt="Copy">
+                    </div>
+                    <div class="concept-name">Copy</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/inside_outside.png" alt="Inside Outside">
+                    </div>
+                    <div class="concept-name">Inside Outside</div>
+                </div>
+            </div>
+            
+            <div class="concept-row">
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/filled_not_filled.png" alt="Filled Not Filled">
+                    </div>
+                    <div class="concept-name">Filled Not Filled</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/complete_shape.png" alt="Complete Shape">
+                    </div>
+                    <div class="concept-name">Complete Shape</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/move_to_boundary.png" alt="Move to Boundary">
+                    </div>
+                    <div class="concept-name">Move to Boundary</div>
+                </div>
+                <div class="concept-item">
+                    <div class="concept-icon">
+                        <img src="assets/images/arc-like/concept-arc/active/same_different.png" alt="Same Different">
+                    </div>
+                    <div class="concept-name">Same Different</div>
+                </div>
+            </div>
+        </div>
+        <div class="concept-divider"></div>
+    </div>
+
+    <div class="container blog extra-large" id="concept-arc-categories">
+        <div class="slide-menu">
+            <ul class="dots" id="concept-arc-categories-slide-menu"></ul>
+        </div>
+    </div>
+
+    <script>
+        const concept_arc_info = JSON.parse(`
+        {"clean_up": {"003": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "004": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "extend_to_boundary": {"000": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "001": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "006": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "center": {"001": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "002": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "004": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "order": {"003": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "007": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "top_bottom2_d": {"006": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "007": {"train": ["train_001.png", "train_002.png", "train_004.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "extract_objects": {"002": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "004": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "top_bottom3_d": {"001": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "002": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "above_below": {"000": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "001": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "006": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "horizontal_vertical": {"001": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "003": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "count": {"001": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "007": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "copy": {"000": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "002": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "inside_outside": {"000": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "003": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "004": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "007": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "filled_not_filled": {"001": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "002": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "complete_shape": {"001": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "002": {"train": ["train_001.png", "train_002.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "004": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "move_to_boundary": {"000": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "006": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}, "same_different": {"001": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "004": {"train": ["train_001.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "008": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}, "009": {"train": ["train_001.png", "train_002.png", "train_003.png", "train_000.png"], "val": ["test_002.png", "test_001.png", "test_000.png"]}}}
+        `)
+        const categories_concept_arc_names = Object.keys(concept_arc_info)
+        const menu_concept_arc = document.getElementById('concept-arc-categories-slide-menu')
+        const container_concept_arc = document.getElementById('concept-arc-categories')
+
+        categories_concept_arc_names.forEach((concept, idx) => {
+            // Generate dot traverse
+            const isActive = idx === 0
+
+            const dot = document.createElement('li')
+            dot.className = 'icon-dot concept-arc-categories' + (isActive ? ' active' : '')
+
+            const img = document.createElement('img')
+            img.src = isActive
+                ? `assets/images/arc-like/concept-arc/active/${concept}.png`
+                : `assets/images/arc-like/concept-arc/inactive/${concept}.png`
+            img.className = 'dot-icon concept-arc-categories' + (isActive ? ' active' : '')
+            dot.appendChild(img)
+            menu_concept_arc.appendChild(dot)
+
+            // Generate content
+            const wrapper = document.createElement('div')
+            wrapper.className = 'concept-arc-categories-slide-content'
+            wrapper.style.display = isActive ? 'block' : 'none'
+            var wrapper_html = `
+            <div class="custom-carousel">
+                <div class="custom-carousel-inner">
+            `
+            // Add items for training
+            for (const pid in concept_arc_info[concept]) {
+                const concept_arc_train = concept_arc_info[concept][pid]["train"]
+                const concept_arc_val = concept_arc_info[concept][pid]["val"]
+                
+                // Prepare training columns
+                let images_html_train = '<div></div>'
+                concept_arc_train.forEach(filename => {
+                images_html_train += `
+                    <div>
+                        <h3 class="centered color-gray">Input</h3>
+                        <div class="clickable-img-container">
+                            <img src="assets/images/arc-like/concept-arc/${concept}/${pid}/input/${filename}" class="clickable-img arc-image" />
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="centered color-gray">Target</h3>
+                        <div class="clickable-img-container">
+                            <img src="assets/images/arc-like/concept-arc/${concept}/${pid}/output/${filename}" class="clickable-img arc-image" />
+                        </div>
+                    </div>
+                `;
+                });
+
+                // Prepare validation columns
+                let images_html_val = '<div></div>'
+                concept_arc_val.forEach(filename => {
+                images_html_val += `
+                    <div>
+                        <h3 class="centered color-gray">Input</h3>
+                        <div class="clickable-img-container">
+                            <img src="assets/images/arc-like/concept-arc/${concept}/${pid}/input/${filename}" class="clickable-img arc-image" />
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="centered color-pink">Prediction</h3>
+                        <div class="clickable-img-container">
+                            <img src="assets/images/arc-like/concept-arc/${concept}/${pid}/pred/${filename}" class="clickable-img arc-image" />
+                        </div>
+                    </div>
+                `;
+                });
+
+                // Format: 
+                // Training Data
+                // Validation Data Below
+                wrapper_html += `
+                    <div class="custom-carousel-item">
+                        <!-- <h2 class="color-pink"> Train </h2> -->
+                        <div class="columns-${2+2*concept_arc_train.length}">
+                            ${images_html_train}
+                        </div>
+                        <!-- <h2 class="color-pink"> Validation </h2> -->
+                        <div class="columns-${2+2*concept_arc_val.length}">
+                            ${images_html_val}
+                        </div>
+                    </div>
+                `
+            }
+
+            
+            
+            wrapper_html += `</div>
+            <button class="custom-carousel-button prev">
+                    <svg viewBox="0 0 24 24"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+                </button>
+                <button class="custom-carousel-button next">
+                    <svg viewBox="0 0 24 24"><path d="M8.59 16.59 13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+                </button>
+            </div>
+            `
+            wrapper.innerHTML = wrapper_html
+            container_concept_arc.appendChild(wrapper)
+        })
+    </script>
+
+
+    </div>
+
+     <div class="container blog extra-large gray">
+        <h2 class="centered">Binary Semantic Segmentation <a class="button"onclick="RestartVideo('seg')"><i class="fa-solid fa-rotate-left"></i></a></h2>
+        <div class="columns-4">
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="seg-video" src="assets/videos/binary-seg-dogs/seg-0.mp4">
+                </video>
+            </div>
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="seg-video" src="assets/videos/binary-seg-dogs/seg-1.mp4">
+                </video>
+            </div>
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="seg-video" src="assets/videos/binary-seg-dogs/seg-2.mp4">
+                </video>
+            </div>
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="seg-video" src="assets/videos/binary-seg-dogs/seg-3.mp4">
+                </video>
+            </div>
+        </div>
+        <p class="caption">
+            Examples for Binary Semantic Segmentation after training with n=30 samples.
+        </p>
+        <h2 class="centered">Pose Estimation <a class="button"onclick="RestartVideo('pose')"><i class="fa-solid fa-rotate-left"></i></a></h2>
+
+        <div class="columns-4">
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="pose-video" src="assets/videos/pose-estimation/pose-0.mp4">
+                </video>
+            </div>
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="pose-video" src="assets/videos/pose-estimation/pose-1.mp4">
+                </video>
+            </div>
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="pose-video" src="assets/videos/pose-estimation/pose-2.mp4">
+                </video>
+            </div>
+            <div>
+                <!-- <p class="caption inline center"></p> -->
+                <video playsinline muted autoplay class="pose-video" src="assets/videos/pose-estimation/pose-3.mp4">
+                </video>
+            </div>
+        </div>
+        <p class="caption">
+            Examples for Pose Estimation after training with n=30 samples.
+        </p>
+    </div>
+
+     <div class="container blog extra-large">
+        <h2 class="centered">Mask2Image & Image2Mask<a class="button"onclick="RestartVideo('misc1')"><i class="fa-solid fa-rotate-left"></i></a></h2>
+        <div class="columns-4">
+            <div>
+                <video playsinline muted autoplay class="misc1-video" src="assets/videos/add-1-shot/rect/seg2img_chamber_0.mp4">
+                </video>
+            </div>
+            <div>
+                <video playsinline muted autoplay class="misc1-video" src="assets/videos/add-1-shot/rect/seg2img_chamber_1.mp4">
+                </video>
+            </div>
+            <div>
+                <video playsinline muted autoplay class="misc1-video" src="assets/videos/add-1-shot/rect/img2seg_chamber_0.mp4">
+                </video>
+            </div>
+            <div>
+                <video playsinline muted autoplay class="misc1-video" src="assets/videos/add-1-shot/rect/img2seg_chamber_1.mp4">
+                </video>
+            </div>
+        </div>
+        <p class="caption">
+            Examples for Mask2Image & Image2Mask after training with a single example (n=1).
+        </p>
+    </div>
+    <div class="container blog extra-large">
+        <h2 class="centered">Miscellaneous Tasks<a class="button"onclick="RestartVideo('misc2')"><i class="fa-solid fa-rotate-left"></i></a></h2>
+        <div class="columns-4">
+            <div>
+                <video playsinline muted autoplay class="misc2-video" src="assets/videos/add-1-shot/square/zoom_0.mp4">
+                </video>
+                <p class="caption inline center">Zoom</p>
+            </div>
+            <div>
+                <video playsinline muted autoplay class="misc2-video" src="assets/videos/add-1-shot/square/vertical_flip_0.mp4">
+                </video>
+                <p class="caption inline center">Vertical Flipping</p>
+            </div>
+            <div>
+                <video playsinline muted autoplay class="misc2-video" src="assets/videos/add-1-shot/square/horizontal_flip_0.mp4">
+                </video>
+                <p class="caption inline center">Horizontal Flipping</p>
+            </div>
+            <div>
+                <video playsinline muted autoplay class="misc2-video" src="assets/videos/add-1-shot/square/to_canny_0.mp4">
+                </video>
+                <p class="caption inline center">Edges</p>
+            </div>
+        </div>
+        <p class="caption">
+            Miscellaneous tasks learned from a single sample (n=1).
+        </p>
+    </div>
+    <div class="container blog main extra-large">
+    <h1>Citation</h1>
+    <p class="text">
+        If you find our work helpful, please use the following citation:
+    </p>
+    <pre>
+    <code class="plaintext">@article{acuaviva2025gen2gen,
+    title   = {From Generation to Generalization: Emergent Few-Shot Learning in Video Diffusion Models},
+    author  = {Pablo Acuaviva and Aram Davtyan and Mariam Hassan and Sebastian Stapf and Ahmad Rahimi and Alexandre Alahi and Paolo Favaro},
+    journal = {arXiv preprint arXiv:2506.xxxxx},
+    year    = {2025}
+    }
+    </code>
+    </pre>
+    </div>
+
+    <!-- Footer Page -->
+    <!-- <footer>
+        <div class="container">
+            <p>
+                
+            </p>
+        </div>    
+    </footer> -->
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="clarity/clarity.js"></script>    
+    <script src="assets/scripts/main.js"></script>    
+    </html>
+</body>
